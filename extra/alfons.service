@@ -1,0 +1,11 @@
+[Unit]
+Description=Alfons
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/python3 /usr/local/alfons/Alfons/Server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

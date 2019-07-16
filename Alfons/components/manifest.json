@@ -1,0 +1,10 @@
+{
+	"load_order": [
+		"database",
+		"mqtt_broker",
+		"mqtt_client",
+		"ftp",
+		"sun",
+		"automation"
+	]
+}

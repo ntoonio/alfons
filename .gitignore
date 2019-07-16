@@ -1,0 +1,16 @@
+.DS_Store
+_*
+!__*__.py
+*.pyc
+*.db
+*.log
+*.pem
+*.csr
+*.crt
+*.srl
+Alfons/apps/*
+Alfons/automations/*
+Alfons/config/alfons.yaml
+Alfons/data/
+Alfons.egg-info/
+dist/

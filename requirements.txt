@@ -1,0 +1,6 @@
+flask==1.0.2
+pyftpdlib==1.5.4
+passlib==1.7.1
+hbmqtt==0.9.5
+pyyaml>=4.2b1
+https://github.com/ntoonio/alfons-hbmqtt-auth/archive/master.zip
