@@ -3,4 +3,5 @@ pyftpdlib==1.5.4
 passlib==1.7.1
 hbmqtt==0.9.5
 pyyaml>=4.2b1
+paho-mqtt==1.4.0
 https://github.com/ntoonio/alfons-hbmqtt-auth/archive/master.zip

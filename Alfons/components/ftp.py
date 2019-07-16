@@ -59,8 +59,8 @@ class Authorizer(DummyAuthorizer):
 handler = TLS_FTPHandler
 del handler.proto_cmds["PASV"]
 del handler.proto_cmds["EPSV"]
-handler.certfile = c.PATH + "config/alfons.crt" # /etc/letsencrypt/live/antoon.io/fullchain.pem"
-handler.keyfile = c.PATH + "config/alfons.pem" # /etc/letsencrypt/live/antoon.io/privkey.pem
+handler.certfile = c.PATH + "config/alfons.crt"
+handler.keyfile = c.PATH + "config/alfons.pem"
 handler.tls_control_required = True
 handler.tls_data_required = True
 handler.passive_ports = range(60000, 60200 + 1)

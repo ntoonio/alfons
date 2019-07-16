@@ -35,13 +35,14 @@ ch = logging.StreamHandler()
 fmt = CustomFormatter()
 fh.setFormatter(fmt)
 ch.setFormatter(fmt)
-ch.level = 20 if DEBUG else 30
+fh.level = 10 if DEBUG else 30
+ch.level = 20
 logging.basicConfig(handlers=[fh, ch], level=0)
 
 config = {}
 
-def generateId(length, onlyHex = False):
-	return "".join(secrets.choice(string.digits + "abcdef" if onlyHex else string.ascii_letters + string.digits + string.punctuation) for _ in range(length))
+def generateId(length, onlyHex = False, noPunctation = True):
+	return "".join(secrets.choice(string.digits + "abcdef" if onlyHex else string.ascii_letters + string.digits + ("" if noPunctation else string.punctuation)) for _ in range(length))
 
 IP = None
 EXT_IP = None

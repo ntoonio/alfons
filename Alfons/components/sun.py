@@ -9,6 +9,8 @@ import common as c
 
 SUN_API = "https://api.sunrise-sunset.org/json?lat=%s&lng=%s" % (c.config["location"]["lat"], c.config["location"]["long"])
 
+# Set this to a state name to test that activation time to a few seconds ahead
+# False to disable
 SUN_DEBUG = False
 
 logger = logging.getLogger(__name__)
@@ -79,24 +81,22 @@ def fetchStates():
 def start(q):
 	comp.components["automation"].registerCondition("sun", evaluateCondition)
 
-	if SUN_DEBUG:
-		global lastUpdate
+	q.task_done()
 
-		testState = "sunrise"
+	if SUN_DEBUG != False:
+		global lastUpdate
 
 		now = int(time.time())
 
-		states[testState] = now + 7
+		states[SUN_DEBUG] = now + 7
 		lastUpdate = now
 
 		logger.info("- - - - SUN DEBUG - - - -")
-		logger.info("Fetched fake state for %s (debugging)" % testState)
-		logger.info("Will exec at %s" % datetime.datetime.fromtimestamp(states[testState]).strftime("%H:%M:%S"))
+		logger.info("Fetched fake state for %s (debugging)" % SUN_DEBUG)
+		logger.info("Will exec at %s" % datetime.datetime.fromtimestamp(states[SUN_DEBUG]).strftime("%H:%M:%S"))
 		logger.info("- - - - - - - - - - - - -")
 
 		return
-
-	q.task_done()
 
 	while True:
 		fetchStates()

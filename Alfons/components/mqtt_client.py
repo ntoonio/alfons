@@ -9,6 +9,9 @@ logger = logging.getLogger(__name__)
 def on_connect(*args):
 	logger.info("MQTT client connected.")
 
+def on_disconnect(*args):
+	logger.warn("Couldn't connect")
+
 def publish(**kwargs):
 	topic = kwargs.get("topic")
 	payload = kwargs.get("payload", None)
@@ -27,8 +30,8 @@ def start(q):
 
 	#client.on_message = on_message # def on_message(client, userdata, message):
 	client.on_connect = on_connect
-
-	client.connect("0.0.0.0", 27370)
+	client.on_disconnect = on_disconnect
+	client.connect("localhost", 27370)
 	q.task_done()
 	client.loop_start()
 			
