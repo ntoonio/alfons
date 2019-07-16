@@ -3,7 +3,7 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
 # Make Alfons a service
-sudo cp extra/alfons.service /lib/systemd/system/alfons.service
+sudo cp extra/alfons.service /etc/systemd/system/alfons.service
 sudo systemctl daemon-reload
 sudo systemctl enable alfons
 sudo systemctl start alfons
