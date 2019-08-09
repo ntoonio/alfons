@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<link rel="stylesheet" href="../dashboard.css">
+	</head>
+	<body>
+		<h1>Setup</h1>
+		<table>
+			<tr>
+				<td>
+					<p>Name</p>
+				</td>
+				<td>
+					<input type="text" id="name-input">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<p>Topic</p>
+				</td>
+				<td>
+					<input type="text" id="topic-input">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<p>Type</p>
+				</td>
+				<td>
+					<select id="type-input">
+						<option value="onoff">On/Off</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button onclick="add()">Add</button>
+				</td>
+			</tr>
+		</table>
+
+		<table id="components-list-table"></table>
+	</body>
+	<script src="setup.js"></script>
+</html>

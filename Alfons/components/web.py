@@ -1,32 +1,34 @@
-from flask import Flask, request, send_from_directory
 import common
 import os
+import json
 import logging
+import asyncio
+from aiohttp import web
+from aiohttp_index import IndexMiddleware
 
 logger = logging.getLogger(__name__)
-# Silences of werkzeug logging
-logging.getLogger("werkzeug").setLevel(1000)
 
-app = Flask(__name__)
+aiohttoAccessLogger = logging.getLogger("aiohttp.access")
+aiohttoAccessLogger.setLevel(logging.WARN)
 
-@app.route("/")
-@app.route("/<path:reqPath>")
-def startPage(reqPath = ""):
-	if reqPath.endswith("/") or reqPath == "":
-		reqPath += "index.html"
+async def apiInfoHandle(request):	
+	data = {
+		"external_ip": common.EXT_IP,
+		"ip": common.IP
+	}
+
+	return web.json_response(data=data)
+
+def start(q):
+	asyncio.set_event_loop(asyncio.new_event_loop())
 	
-	return send_from_directory(common.PATH + "/components/web", reqPath)
+	app = web.Application(middlewares=[IndexMiddleware()])
 
-@app.route("/apps/<path:reqPath>")
-def appPage(reqPath):
-	if reqPath.endswith("/"):
-		reqPath += "index.html"
+	# API endpoints
+	app.router.add_get("/api/v1/info/", apiInfoHandle)
+
+	app.router.add_static("/", common.PATH + "components/web/")
 	
-	if not os.path.isdir(common.PATH + "/apps/" + reqPath.split("/")[0]):
-		return "That app doesn't exists"
+	q.task_done()
 
-	return send_from_directory(common.PATH + "/apps/", reqPath)
-
-def start():
-	logger.info("Starting Flask")
-	app.run(host="0.0.0.0", port=81)
+	web.run_app(app)

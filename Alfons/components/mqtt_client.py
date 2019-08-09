@@ -18,6 +18,8 @@ def publish(**kwargs):
 	qos = kwargs.get("qos", 0)
 	retain = kwargs.get("retain", False)
 
+	logger.debug("Publishing '{}' to {} with qos set to {}. retain={}".format(payload, topic, qos, retain))
+
 	client.publish(topic, payload=payload, qos=qos, retain=retain)
 
 def start(q):

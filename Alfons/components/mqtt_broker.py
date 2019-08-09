@@ -21,7 +21,7 @@ def broker_coro():
 				"keyfile": c.config["data_path"] + "config/alfons.pem"
 			},
 			"ws": {
-				"bind": "0.0.0.0:8080",
+				"bind": "0.0.0.0:27371",
 				"type": "ws"
 			}
 		},

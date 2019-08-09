@@ -20,6 +20,7 @@ logging.getLogger("urllib3.connectionpool").setLevel(100)
 states = {
 	"sunrise": None,
 	"sunset": None,
+	"solar_noon": None,
 	"civil_twilight_begin": None,
 	"civil_twilight_end": None,
 	"nautical_twilight_begin": None,
@@ -61,7 +62,7 @@ def fetchStates():
 		logger.warn("Sun API status is not 'OK' (1)")
 		return False
 
-	for k in ["solar_noon", "day_length"]:
+	for k in ["day_length"]:
 		contents["results"].pop(k, None)
 	results = contents["results"]
 

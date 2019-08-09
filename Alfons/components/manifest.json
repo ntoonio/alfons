@@ -5,6 +5,7 @@
 		"mqtt_client",
 		"ftp",
 		"sun",
-		"automation"
+		"automation",
+		"web"
 	]
 }
