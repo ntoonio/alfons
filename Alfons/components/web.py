@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 aiohttoAccessLogger = logging.getLogger("aiohttp.access")
 aiohttoAccessLogger.setLevel(logging.WARN)
 
-async def apiInfoHandle(request):	
+def apiInfoHandle(request):	
 	data = {
 		"external_ip": common.EXT_IP,
 		"ip": common.IP
@@ -19,16 +19,22 @@ async def apiInfoHandle(request):
 
 	return web.json_response(data=data)
 
+# This has to be created in the main loop
+
+loop = asyncio.get_event_loop()
+
+app = web.Application(middlewares=[IndexMiddleware()])
+
+# API endpoints
+app.router.add_get("/api/v1/info/", apiInfoHandle)
+
+app.router.add_static("/", common.PATH + "components/web/")
+
+handler = app.make_handler()
+server = loop.create_server(handler, host="0.0.0.0", port=8080)
+
 def start(q):
-	asyncio.set_event_loop(asyncio.new_event_loop())
-	
-	app = web.Application(middlewares=[IndexMiddleware()])
-
-	# API endpoints
-	app.router.add_get("/api/v1/info/", apiInfoHandle)
-
-	app.router.add_static("/", common.PATH + "components/web/")
-	
 	q.task_done()
 
-	web.run_app(app)
+	loop.run_until_complete(server)
+	loop.run_forever()
