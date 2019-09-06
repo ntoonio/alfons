@@ -4,4 +4,6 @@ passlib==1.7.1
 hbmqtt==0.9.5
 pyyaml>=4.2b1
 paho-mqtt==1.4.0
+aiohttp==1.0.5
+aiohttp-index==0.1
 https://github.com/ntoonio/alfons-hbmqtt-auth/archive/master.zip

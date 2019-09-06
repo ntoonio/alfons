@@ -1,3 +1,142 @@
-#components-list-table {
+#component-list {
 	width: 100%;
+}
+
+.row-name > p {
+	padding-left: 10px;
+}
+
+.row-action > div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.row {
+	margin-top: 5px;
+	
+	-webkit-box-shadow: 0px 5px -5px -5px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.1);
+	box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.1);
+}
+
+.row-action, .row-name {
+	display: table;
+	height: 100%;
+}
+
+.row-action > div, .row-name > p {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+@media (hover: hover) {
+	body > h1:nth-child(1) {
+		font-size: 32px;
+	}
+
+	.row-name > p {
+		font-size: 20px;
+	}
+
+	.row {
+		height: 50px;
+	}
+}
+
+@media (hover: none) {
+	body > h1:nth-child(1) {
+		font-size: 70px;
+	}
+
+	.row-name > p {
+		font-size: 60px;
+	}
+
+	.row {
+		height: 200px;
+	}
+
+	/* Extra small */
+	@media (max-width: 576px) {
+	}
+
+	/* Small */
+	@media (min-width: 576px) {
+	}
+
+	/* Medium */
+	@media (min-width: 768px) {
+	}
+
+	/* Large */
+	@media (min-width: 992px) {
+	}
+	/* Extra large */
+	@media (min-width: 1200px) {
+	}
+}
+
+/*
+=====================
+||     ACTIONS     ||
+=====================
+*/
+
+.action-onoff > button {
+	background-color: white;
+	cursor: pointer;
+
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: lightgray;
+}
+
+@media (hover: hover) {
+	.action-onoff > button {
+		height: 25px;
+		width: 40px;
+		margin: 0px 2.5px;
+		font-size: 12px;
+	}
+
+	/* Extra small */
+	@media (max-width: 576px) {
+		.action-onoff > button {
+			height: 25px;
+			width: 40px;
+			margin: 0px 2.5px;
+			font-size: 12px;
+		}
+	}
+
+	/* Small */
+	@media (min-width: 576px) {
+		.action-onoff > button {
+			height: 35px;
+			width: 70px;
+			margin: 0px 5px;
+			font-size: 15px;
+		}
+	}
+
+	/* Medium */
+	@media (min-width: 768px) {
+	}
+
+	/* Large */
+	@media (min-width: 992px) {
+	}
+	/* Extra large */
+	@media (min-width: 1200px) {
+	}
+}
+
+@media (hover: none) {
+	.action-onoff > button {
+		height: 190px;
+		width: 200px;
+		margin: 0px 10px;
+		font-size: 50px;
+	}
 }

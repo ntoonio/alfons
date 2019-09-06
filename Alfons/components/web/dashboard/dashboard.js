@@ -28,7 +28,7 @@ function mqttPublish(topic, message) {
 
 function createActionHTML(component) {
 	if (component["type"] == "onoff") {
-		return "<button onclick='mqttPublish(\"" + component["topic"] + "\", \"ON\")'>On</button><button onclick='mqttPublish(\"" + component["topic"] + "\", \"OFF\")'>Off</button>"
+		return "<div class='action action-onoff'><button onclick='mqttPublish(\"" + component["topic"] + "\", \"ON\")'>On</button><button onclick='mqttPublish(\"" + component["topic"] + "\", \"OFF\")'>Off</button></div>"
 	}
 	else {
 		return "<p>Error, unknown type</p>"
@@ -36,20 +36,9 @@ function createActionHTML(component) {
 }
 
 function printComponents() {
-	document.getElementById("components-list-table").innerHTML = ""
-
-	const columns = ["name", "action"]
-	const headerRow = document.createElement("tr")
-	columns.forEach(k => {
-		const th = document.createElement("th")
-		const p = document.createElement("p")
-		
-		p.innerText = k.charAt(0).toUpperCase() + k.slice(1).toLowerCase()
-
-		th.appendChild(p)
-		headerRow.appendChild(th)
-	})
-	document.getElementById("components-list-table").appendChild(headerRow)
+	const componentList = document.getElementById("component-list")
+	
+	componentList.innerHTML = ""
 
 	const components = localStorage.getItem("components")
 	
@@ -57,11 +46,10 @@ function printComponents() {
 
 	var i = 0
 	JSON.parse(components).forEach(component => {
-		const tr = document.createElement("tr")
-		tr.innerHTML = "<td><p>" + component["name"] + "</p></td><td>" + createActionHTML(component) + "</td>"
+		const row = "<div class='row'><div class='row-name col-xl-4 col-lg-4 col-md-6 col-sm-8 col-7'><p>" + component["name"] + "</p></div><div class='row-action col-xl-8 col-lg-8 col-md-6 col-sm-4 col-5'>" + createActionHTML(component) + "</div></div>"
 
-		document.getElementById("components-list-table").appendChild(tr)
-
+		componentList.innerHTML += row
+		
 		i += 1
 	})
 }
