@@ -15,7 +15,7 @@ def broker_coro():
 			"default": {
 				"bind": "0.0.0.0:27370",
 				"type": "tcp",
-				"ssl": False,
+				"ssl": True,
 				"cafile": c.config["data_path"] + "config/ca.crt",
 				"certfile": c.config["data_path"] + "config/alfons.crt",
 				"keyfile": c.config["data_path"] + "config/alfons.pem"

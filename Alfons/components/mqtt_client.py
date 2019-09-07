@@ -3,6 +3,8 @@ import common as c
 import components as comp
 import time
 import logging
+import ssl
+from ssl import PROTOCOL_TLSv1_1
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +35,10 @@ def start(q):
 	#client.on_message = on_message # def on_message(client, userdata, message):
 	client.on_connect = on_connect
 	client.on_disconnect = on_disconnect
+
+	client.tls_set(c.config["data_path"] + "config/ca.crt", tls_version=PROTOCOL_TLSv1_1)
+	client.tls_insecure_set(True)
+
 	client.connect("localhost", 27370)
 	q.task_done()
 	client.loop_start()
