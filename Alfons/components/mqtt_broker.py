@@ -16,17 +16,17 @@ def broker_coro():
 				"bind": "0.0.0.0:27370",
 				"type": "tcp",
 				"ssl": True,
-				"cafile": c.config["data_path"] + "config/ca.crt",
-				"certfile": c.config["data_path"] + "config/alfons.crt",
-				"keyfile": c.config["data_path"] + "config/alfons.pem"
+				"cafile": c.PATH + "config/ca.crt",
+				"certfile": c.PATH + "config/alfons.crt",
+				"keyfile": c.PATH + "config/alfons.pem"
 			},
 			"ws": {
 				"bind": "0.0.0.0:27371",
 				"type": "ws",
 				"ssl": True,
-				"cafile": c.config["data_path"] + "config/ca.crt",
-				"certfile": c.config["data_path"] + "config/alfons.crt",
-				"keyfile": c.config["data_path"] + "config/alfons.pem"
+				"cafile": c.PATH + "config/ca.crt",
+				"certfile": c.PATH + "config/alfons.crt",
+				"keyfile": c.PATH + "config/alfons.pem"
 			}
 		},
 		"timeout-disconnect-delay": 2,
