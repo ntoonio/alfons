@@ -22,7 +22,11 @@ def broker_coro():
 			},
 			"ws": {
 				"bind": "0.0.0.0:27371",
-				"type": "ws"
+				"type": "ws",
+				"ssl": True,
+				"cafile": c.config["data_path"] + "config/ca.crt",
+				"certfile": c.config["data_path"] + "config/alfons.crt",
+				"keyfile": c.config["data_path"] + "config/alfons.pem"
 			}
 		},
 		"timeout-disconnect-delay": 2,
