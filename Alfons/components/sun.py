@@ -56,7 +56,9 @@ def evaluateCondition(condition):
 def fetchStates():
 	global states, lastUpdate
 	
-	contents = requests.get(SUN_API).json()
+	todayDate = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d")
+
+	contents = requests.get(SUN_API + "&date=" + todayDate).json()
 	
 	if contents["status"] != "OK":
 		logger.warn("Sun API status is not 'OK' (1)")
@@ -66,11 +68,11 @@ def fetchStates():
 		contents["results"].pop(k, None)
 	results = contents["results"]
 
-	today = datetime.datetime.fromtimestamp(time.time()).strftime("%d/%m/%Y")
+	
 
 	for state in results:
-		strTime = "%s %s" % (today, results[state])
-		timeFormat = "%d/%m/%Y %I:%M:%S %p"
+		strTime = "%s %s" % (todayDate, results[state])
+		timeFormat = "%Y-%m-%d %I:%M:%S %p"
 		timestamp = datetime.datetime.strptime(strTime, timeFormat).timestamp()
 		results[state] = int(timestamp)
 
