@@ -4,8 +4,9 @@
 		"mqtt_broker",
 		"mqtt_client",
 		"ftp",
-		"sun",
 		"automation",
+		"sun",
+		"clock",
 		"web"
 	]
 }
