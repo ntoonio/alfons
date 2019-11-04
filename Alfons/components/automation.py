@@ -23,7 +23,7 @@ def runExecutionTests():
 						tRL.append(condition.get("rel", "and"))
 
 			tRL = tRL[:-1]
-			
+
 			while "and" in tRL:
 				i = 0
 				for j in tRL:
@@ -55,7 +55,7 @@ def registerCondition(condition, function):
 
 	conditions[condition] = function
 
-def testCondition(c): 
+def testCondition(c):
 	if c["condition"] in conditions:
 		if conditions[c["condition"]](c):
 			return True
@@ -73,8 +73,11 @@ def executeActions(target):
 	"Execute the actions for the specified automation"
 
 	for action in automations[target]["actions"]:
-		actionName = action["action"]
-		actions[actionName](**action)
+		try:
+			actionName = action["action"]
+			actions[actionName](**action)
+		except:
+			logger.error("Couldn't exec action '" + actionName + "' for target '" + target + "'")
 
 def start(q):
 	_readAllAutomations()
