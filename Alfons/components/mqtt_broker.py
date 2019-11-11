@@ -13,20 +13,18 @@ def broker_coro():
 	brokerConfig = {
 		"listeners": {
 			"default": {
-				"bind": "0.0.0.0:27370",
+				"bind": "0.0.0.0:" + str(c.config["broker"]["tcp_port"]),
 				"type": "tcp",
 				"ssl": True,
-				"cafile": c.PATH + "config/ca.crt",
-				"certfile": c.PATH + "config/alfons.crt",
-				"keyfile": c.PATH + "config/alfons.pem"
+				"certfile": c.config["ssl"]["cert_file"],
+				"keyfile": c.config["ssl"]["key_file"]
 			},
 			"ws": {
-				"bind": "0.0.0.0:27371",
+				"bind": "0.0.0.0:" + str(c.config["broker"]["ws_port"]),
 				"type": "ws",
 				"ssl": True,
-				"cafile": c.PATH + "config/ca.crt",
-				"certfile": c.PATH + "config/alfons.crt",
-				"keyfile": c.PATH + "config/alfons.pem"
+				"certfile": c.config["ssl"]["cert_file"],
+				"keyfile": c.config["ssl"]["key_file"]
 			}
 		},
 		"timeout-disconnect-delay": 2,

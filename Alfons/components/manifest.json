@@ -3,7 +3,6 @@
 		"database",
 		"mqtt_broker",
 		"mqtt_client",
-		"ftp",
 		"automation",
 		"sun",
 		"clock",

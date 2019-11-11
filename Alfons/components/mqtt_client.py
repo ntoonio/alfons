@@ -36,10 +36,9 @@ def start(q):
 	client.on_connect = on_connect
 	client.on_disconnect = on_disconnect
 
-	client.tls_set(c.PATH + "config/ca.crt", tls_version=PROTOCOL_TLSv1_1)
+	client.tls_set(c.config["ssl"]["cert_file"], tls_version=PROTOCOL_TLSv1_1)
 	client.tls_insecure_set(True)
 
-	client.connect("localhost", 27370)
+	client.connect("localhost", c.config["broker"]["tcp_port"])
 	q.task_done()
 	client.loop_start()
-			
