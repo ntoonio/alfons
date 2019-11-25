@@ -16,6 +16,7 @@ def broker_coro():
 				"bind": "0.0.0.0:" + str(c.config["broker"]["tcp_port"]),
 				"type": "tcp",
 				"ssl": True,
+				"cafile": c.config["ssl"]["chain_file"],
 				"certfile": c.config["ssl"]["cert_file"],
 				"keyfile": c.config["ssl"]["key_file"]
 			},
@@ -23,6 +24,7 @@ def broker_coro():
 				"bind": "0.0.0.0:" + str(c.config["broker"]["ws_port"]),
 				"type": "ws",
 				"ssl": True,
+				"cafile": c.config["ssl"]["chain_file"],
 				"certfile": c.config["ssl"]["cert_file"],
 				"keyfile": c.config["ssl"]["key_file"]
 			}

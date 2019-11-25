@@ -26,22 +26,28 @@ def apiInfoHandle(request):
 
 	return web.json_response(data=data)
 
+def prepare():
+	global loop, server
+
+	loop = asyncio.get_event_loop()
+
+	app = web.Application(middlewares=[IndexMiddleware()])
+
+	# API endpoints
+	app.router.add_get("/api/v1/info/", apiInfoHandle)
+	app.router.add_static("/", common.PATH + "components/web/")
+
+	sslContext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+	sslContext.load_cert_chain(c.config["ssl"]["fullchain_file"], c.config["ssl"]["key_file"])
+
+	# TODO: REMOVE - FOR DEBUGGING ONLY
+	sslContext.hostname_checks_common_name = False
+
+	handler = app.make_handler()
+	server = loop.create_server(handler, host="0.0.0.0", port=c.config["web_port"], ssl=sslContext)
+
 # This has to be created in the main loop
-
-loop = asyncio.get_event_loop()
-
-app = web.Application(middlewares=[IndexMiddleware()])
-
-# API endpoints
-app.router.add_get("/api/v1/info/", apiInfoHandle)
-
-app.router.add_static("/", common.PATH + "components/web/")
-
-sslContext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-sslContext.load_cert_chain(c.config["ssl"]["cert_file"], c.config["ssl"]["key_file"])
-
-handler = app.make_handler(ssl_context=sslContext)
-server = loop.create_server(handler, host="0.0.0.0", port=c.config["web_port"])
+prepare()
 
 def start(q):
 	q.task_done()

@@ -36,7 +36,14 @@ def start(q):
 	client.on_connect = on_connect
 	client.on_disconnect = on_disconnect
 
-	client.tls_set(c.config["ssl"]["cert_file"], tls_version=PROTOCOL_TLSv1_1)
+	sslContext = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+
+	# curl https://curl.haxx.se/ca/cacert.pem > trusted_file
+	sslContext.load_verify_locations(cafile=c.config["ssl"]["trusted_file"])
+
+	client.tls_set_context(sslContext)
+
+	# TODO: REMOVE - FOR DEBUGGING ONLY
 	client.tls_insecure_set(True)
 
 	client.connect("localhost", c.config["broker"]["tcp_port"])

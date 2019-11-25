@@ -6,7 +6,8 @@ function connect() {
 		},
 		mqttVersion: 4,
 		userName : localStorage.getItem("username"),
-		password : localStorage.getItem("password")
+		password : localStorage.getItem("password"),
+		useSSL: true
 	})
 }
 
@@ -37,11 +38,9 @@ function createActionHTML(component) {
 
 function printComponents() {
 	const componentList = document.getElementById("component-list")
-	
 	componentList.innerHTML = ""
 
 	const components = localStorage.getItem("components")
-	
 	if (components == undefined) { return }
 
 	var i = 0
@@ -49,7 +48,7 @@ function printComponents() {
 		const row = "<div class='row'><div class='row-name col-xl-4 col-lg-4 col-md-6 col-sm-8 col-7'><p>" + component["name"] + "</p></div><div class='row-action col-xl-8 col-lg-8 col-md-6 col-sm-4 col-5'>" + createActionHTML(component) + "</div></div>"
 
 		componentList.innerHTML += row
-		
+
 		i += 1
 	})
 }
@@ -58,7 +57,10 @@ if (localStorage.getItem("username") == undefined || localStorage.getItem("passw
 	window.location.href += "credentials/"
 }
 
-client = new Paho.MQTT.Client(window.location.hostname, 27371, "web-dashboard-" + localStorage.getItem("client-id"));
+const host = window.location.hostname
+const port = 27372
+
+client = new Paho.MQTT.Client(host, port, "web-dashboard-" + localStorage.getItem("client-id"));
 
 client.onConnectionLost = onConnectionLost;
 
