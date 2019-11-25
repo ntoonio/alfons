@@ -1,0 +1,132 @@
+#!/bin/sh
+"exec" "`dirname $0`/venv/bin/python" "$0" "$@"
+
+# https://github.com/ntoonio/alfons-hbmqtt-auth/archive/master.zip
+
+from passlib.hash import pbkdf2_sha256
+import sqlite3
+import threading
+import os.path as os_path
+import yaml
+import argparse
+
+PATH = os_path.dirname(os_path.abspath(__file__)) + "/"
+
+class LockableSqliteConnection(object):
+	def __init__(self, dburi):
+		self.lock = threading.Lock()
+		self.connection = sqlite3.connect(dburi, check_same_thread=False)
+		self.cursor = self.connection.cursor()
+	def __enter__(self):
+		self.lock.acquire()
+		self.cursor = self.connection.cursor()
+		return self
+	def __exit__(self, type, value, traceback):
+		self.lock.release()
+		self.connection.commit()
+		if self.cursor is not None:
+			self.cursor.close()
+			self.cursor = None
+
+# These two functions are the brightest things I've coded all my life
+def setupSubparsers(parser, T):
+	if "subparsers" in T:
+		sub = parser.add_subparsers(dest=T["name"])
+		for t in T["subparsers"]:
+			tParser = sub.add_parser(t["name"])
+			if "arguments" in t:
+				for a in t["arguments"]:
+					name = a["name"]
+					b = a.copy()
+					del b["name"]
+					tParser.add_argument(name, **b)
+			setupSubparsers(tParser, t)
+
+def runAction(args, T):
+	for t in T["subparsers"]:
+		if t["name"] == getattr(args, T["name"]):
+			if "cmd" in t:
+				a = vars(args)
+				b = [a[k] for k in a if k in [x["name"] for x in t["arguments"]]] if "arguments" in t else []
+				return t["cmd"](*b)
+			elif "subparsers" in t:
+				return runAction(args, t)
+
+def newPassword(username, password):
+	with db:
+		fetch = db.cursor.execute("SELECT password FROM users WHERE username = ?", [username]).fetchone()
+		if fetch != None and len(fetch) == 1:
+			hashed = pbkdf2_sha256.hash(password)
+
+			db.cursor.execute("UPDATE users SET password = ? WHERE username = ?", [hashed, username])
+			return "Password updated"
+		else:
+			return "Username '{}' not found".format(username)
+
+def verifyPassword(username, password):
+	with db:
+		fetch = db.cursor.execute("SELECT password FROM users WHERE username = ?", [username]).fetchone()
+		if fetch != None and len(fetch) == 1:
+			if pbkdf2_sha256.verify(password, fetch[0]):
+				return "Password matches!"
+			else:
+				return "Password doesn't match that for user {}".format(username)
+		else:
+			return "Username '{}' not found".format(username)
+
+argTree = {
+	"name": "parser",
+	"subparsers": [
+		{
+			"name": "newpass",
+			"cmd": newPassword,
+			"arguments": [
+				{
+					"name": "username"
+				},
+				{
+					"name": "password"
+				}
+			]
+		},
+		{
+			"name": "verify",
+			"cmd": verifyPassword,
+			"arguments": [
+				{
+					"name": "username"
+				},
+				{
+					"name": "password"
+				}
+			]
+		}
+	]
+}
+
+def main():
+	with open(PATH + "Alfons/config/alfons.yaml") as f:
+		config = yaml.safe_load(f)
+
+	if "data_path" not in config:
+		return "No data path in config file"
+
+	global db
+	db = LockableSqliteConnection(config["data_path"] + "Alfons.db")
+
+	parser = argparse.ArgumentParser()
+	setupSubparsers(parser, argTree)
+	args = parser.parse_args()
+	return runAction(args, argTree)
+
+"""
+- - - - - - -
+    Errors
+- - - - - - -
+
+1 - No data path
+2 - User not in database
+"""
+
+if __name__ == "__main__":
+	print(main())
