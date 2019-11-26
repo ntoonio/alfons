@@ -1,8 +1,6 @@
 #!/bin/sh
 "exec" "`dirname $0`/venv/bin/python" "$0" "$@"
 
-# https://github.com/ntoonio/alfons-hbmqtt-auth/archive/master.zip
-
 from passlib.hash import pbkdf2_sha256
 import sqlite3
 import threading

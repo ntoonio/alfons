@@ -1,3 +1,5 @@
+./alfons_hbmqtt_auth/
+
 aiohttp==3.6.2
 aiohttp-index==0.1
 async-timeout==3.0.1
