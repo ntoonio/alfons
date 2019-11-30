@@ -81,7 +81,8 @@ def executeActions(target):
 
 def start(q):
 	_readAllAutomations()
-	q.task_done()
+
+	q.put(0)
 
 	while True:
 		time.sleep(1 - (time.time() % 1))

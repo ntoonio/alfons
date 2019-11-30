@@ -24,4 +24,5 @@ class LockableSqliteConnection(object):
 def start(q):
 	global db
 	db = LockableSqliteConnection(c.config["data_path"] + "Alfons.db")
-	q.task_done()
+
+	q.put(0)

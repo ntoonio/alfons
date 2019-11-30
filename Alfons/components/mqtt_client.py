@@ -29,23 +29,28 @@ def start(q):
 
 	comp.components["automation"].registerAction("mqtt", publish)
 
-	client = mqtt.Client("client-id", transport="tcp")
+	client = mqtt.Client("alfons-server-client-id", transport="tcp")
 	client.username_pw_set("server", password=c.MQTT_SERVER_PASSWORD)
 
 	#client.on_message = on_message # def on_message(client, userdata, message):
 	client.on_connect = on_connect
 	client.on_disconnect = on_disconnect
 
-	sslContext = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+	sslContext = None
+	if c.config["ssl"]["enabled"]:
+		sslContext = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
 
-	# curl https://curl.haxx.se/ca/cacert.pem > trusted_file
-	sslContext.load_verify_locations(cafile=c.config["ssl"]["trusted_file"])
+		# curl https://curl.haxx.se/ca/cacert.pem > trusted_file
+		sslContext.load_verify_locations(cafile=c.config["ssl"]["trusted_file"])
 
 	client.tls_set_context(sslContext)
 
-	# TODO: REMOVE - FOR DEBUGGING ONLY
+	# It's ok that this is insecure since it's only a local connection. The only reason it uses TLS is because that's what the
+	# broker is using and it can't connect without it. It might, in the future if we need more local connections, be an
+	# alternative to start a new broker listener without encryption and that won't be exposed to the internet.
 	client.tls_insecure_set(True)
 
-	client.connect("localhost", c.config["broker"]["tcp_port"])
-	q.task_done()
+	client.connect("localhost", c.config["mqtt"]["tcp_port"])
+
+	q.put(0)
 	client.loop_start()

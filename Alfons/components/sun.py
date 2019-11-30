@@ -55,11 +55,11 @@ def evaluateCondition(condition):
 
 def fetchStates():
 	global states, lastUpdate
-	
+
 	todayDate = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d")
 
 	contents = requests.get(SUN_API + "&date=" + todayDate).json()
-	
+
 	if contents["status"] != "OK":
 		logger.warn("Sun API status is not 'OK' (1)")
 		return False
@@ -68,7 +68,7 @@ def fetchStates():
 		contents["results"].pop(k, None)
 	results = contents["results"]
 
-	
+
 
 	for state in results:
 		strTime = "%s %s" % (todayDate, results[state])
@@ -80,11 +80,13 @@ def fetchStates():
 	lastUpdate = time.time()
 
 	return True
-	
+
 def start(q):
 	comp.components["automation"].registerCondition("sun", evaluateCondition)
 
-	q.task_done()
+	fetchStates()
+
+	q.put(0)
 
 	if SUN_DEBUG != False:
 		global lastUpdate
@@ -107,10 +109,11 @@ def start(q):
 
 		now = datetime.datetime.now()
 		passed = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-		
+
 		# Calculate time to sleep until 10 seconds after midnight
 		sleep = 86400 - passed + 10
 
 		logger.info("Fetching state again in %d seconds" % sleep)
 
 		time.sleep(sleep)
+		fetchStates()

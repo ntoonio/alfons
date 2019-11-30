@@ -1,0 +1,26 @@
+data_path: config/
+
+ip: NULL
+ext_ip: NULL
+domain: NULL
+
+location:
+  lat: "00.000000"
+  long: "00.000000"
+
+ssl:
+  chain_file: NULL
+  cert_file: NULL
+  key_file: NULL
+  trusted_file: NULL
+
+mqtt:
+  tcp_port: 27371
+  ws_port: 27372
+
+  ssl: False
+
+web:
+  port: 8080
+
+  ssl: False

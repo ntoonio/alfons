@@ -9,7 +9,7 @@ def evaluateCondition(condition):
 	activateDateClock = condition["clock"] + " " + datetime.now().strftime("%d/%m/%Y")
 	rawTime = int(datetime.timestamp(datetime.strptime(activateDateClock, "%H:%M %d/%m/%Y")))
 	offset = int(condition["offset"] if "offset" in condition else 0)
-	
+
 	activateTime = rawTime + offset
 
 	nowTime = int(time.time())
@@ -22,8 +22,8 @@ def evaluateCondition(condition):
 		return True
 
 	return False
-	
+
 def start(q):
 	comp.components["automation"].registerCondition("clock", evaluateCondition)
 
-	q.task_done()
+	q.put(0)

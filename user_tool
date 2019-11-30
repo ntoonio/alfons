@@ -8,7 +8,8 @@ import os.path as os_path
 import yaml
 import argparse
 
-PATH = os_path.dirname(os_path.abspath(__file__)) + "/"
+# The project root of the alfons project
+PATH = os_path.dirname(os_path.abspath(__file__)) + "/Alfons/"
 
 class LockableSqliteConnection(object):
 	def __init__(self, dburi):
@@ -40,7 +41,8 @@ def setupSubparsers(parser, T):
 					tParser.add_argument(name, **b)
 			setupSubparsers(tParser, t)
 
-def runAction(args, T):
+def runAction(T, p=None, args=None):
+	if args == None and not p == None: args = p.parse_args()
 	for t in T["subparsers"]:
 		if t["name"] == getattr(args, T["name"]):
 			if "cmd" in t:
@@ -48,7 +50,13 @@ def runAction(args, T):
 				b = [a[k] for k in a if k in [x["name"] for x in t["arguments"]]] if "arguments" in t else []
 				return t["cmd"](*b)
 			elif "subparsers" in t:
-				return runAction(args, t)
+				return runAction(t, args=args)
+	if not p == None: p.print_help()
+
+def easyArguments(T):
+	parser = argparse.ArgumentParser()
+	setupSubparsers(parser, T)
+	return runAction(T, p=parser)
 
 def newPassword(username, password):
 	with db:
@@ -74,6 +82,7 @@ def verifyPassword(username, password):
 
 argTree = {
 	"name": "parser",
+	"description": "hejsan",
 	"subparsers": [
 		{
 			"name": "newpass",
@@ -103,28 +112,23 @@ argTree = {
 }
 
 def main():
-	with open(PATH + "Alfons/config/alfons.yaml") as f:
+	global parser
+	with open(PATH + "config/alfons.yaml") as f:
 		config = yaml.safe_load(f)
 
 	if "data_path" not in config:
 		return "No data path in config file"
 
+	# If the data path doesn't start with a / it's a path relative to the project root
+	if not config["data_path"].startswith("/"):
+		config["data_path"] = PATH + config["data_path"]
+
 	global db
 	db = LockableSqliteConnection(config["data_path"] + "Alfons.db")
 
-	parser = argparse.ArgumentParser()
-	setupSubparsers(parser, argTree)
-	args = parser.parse_args()
-	return runAction(args, argTree)
-
-"""
-- - - - - - -
-    Errors
-- - - - - - -
-
-1 - No data path
-2 - User not in database
-"""
+	if easyArguments(argTree) is None:
+		return ""
 
 if __name__ == "__main__":
-	print(main())
+	#print(main())
+	main()

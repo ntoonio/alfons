@@ -1,5 +1,6 @@
 {
 	"load_order": [
+		"discover_server",
 		"database",
 		"mqtt_broker",
 		"mqtt_client",

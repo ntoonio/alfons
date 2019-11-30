@@ -4,7 +4,6 @@ from hbmqtt.plugins.authentication import BaseAuthPlugin
 import common as c
 import components as comp
 import logging
-import common as c
 
 logging.getLogger("transitions.core").setLevel(100)
 
@@ -13,17 +12,17 @@ def broker_coro():
 	brokerConfig = {
 		"listeners": {
 			"default": {
-				"bind": "0.0.0.0:" + str(c.config["broker"]["tcp_port"]),
+				"bind": "0.0.0.0:" + str(c.config["mqtt"]["tcp_port"]),
 				"type": "tcp",
-				"ssl": True,
+				"ssl": c.config["ssl"]["enabled"],
 				"cafile": c.config["ssl"]["chain_file"],
 				"certfile": c.config["ssl"]["cert_file"],
 				"keyfile": c.config["ssl"]["key_file"]
 			},
 			"ws": {
-				"bind": "0.0.0.0:" + str(c.config["broker"]["ws_port"]),
+				"bind": "0.0.0.0:" + str(c.config["mqtt"]["ws_port"]),
 				"type": "ws",
-				"ssl": True,
+				"ssl": c.config["ssl"]["enabled"],
 				"cafile": c.config["ssl"]["chain_file"],
 				"certfile": c.config["ssl"]["cert_file"],
 				"keyfile": c.config["ssl"]["key_file"]
@@ -47,5 +46,6 @@ def broker_coro():
 def start(q):
 	asyncio.set_event_loop(asyncio.new_event_loop())
 	asyncio.get_event_loop().run_until_complete(broker_coro())
-	q.task_done()
+
+	q.put(0)
 	asyncio.get_event_loop().run_forever()

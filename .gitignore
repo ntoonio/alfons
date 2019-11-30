@@ -1,4 +1,5 @@
 .DS_Store
+
 *.pyc
 *.db
 *.log
@@ -7,15 +8,16 @@ venv/
 *.egg-info/
 dist/
 
+.vscode/
+
 *.pem
 *.csr
 *.crt
 *.srl
 
-Alfons/apps/*
 Alfons/automations/*
 Alfons/config/alfons.yaml
-Alfons/data/
+Alfons/config/data/
 
 _*
 !__*__.py
