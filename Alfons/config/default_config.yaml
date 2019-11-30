@@ -9,8 +9,8 @@ location:
   long: "00.000000"
 
 ssl:
-  chain_file: NULL
   cert_file: NULL
+  chain_file: NULL
   key_file: NULL
   trusted_file: NULL
 
@@ -18,9 +18,5 @@ mqtt:
   tcp_port: 27371
   ws_port: 27372
 
-  ssl: False
-
 web:
   port: 8080
-
-  ssl: False

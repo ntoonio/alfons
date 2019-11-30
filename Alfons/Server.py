@@ -104,6 +104,3 @@ def start():
 		l.acquire()
 	except KeyboardInterrupt:
 		logging.info("Exiting...")
-
-if __name__ == "__main__":
-	start()

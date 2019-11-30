@@ -30,13 +30,13 @@ def broker_coro():
 		},
 		"timeout-disconnect-delay": 2,
 		"topic-check": {
-			"enabled": False
+			"enabled": True,
+			"plugins": ["mqtt_plugin_alfons_topic"]
 		},
 		"auth": {
-			"plugins": ["auth_alfons"],
+			"plugins": ["mqtt_plugin_alfons_auth"],
 			"alfons-db": comp.components["database"].db,
-			"server-password": c.MQTT_SERVER_PASSWORD,
-			"debugging": c.DEBUG
+			"server-password": c.MQTT_SERVER_PASSWORD
 		}
 	}
 

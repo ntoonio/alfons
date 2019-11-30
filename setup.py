@@ -16,5 +16,11 @@ setuptools.setup(
 	classifiers=[
 		"Programming Language :: Python :: 3",
 		"License :: OSI Approved :: MIT License"
-	]
+	],
+    entry_points={
+        "hbmqtt.broker.plugins": [
+			"mqtt_plugin_alfons_auth = Alfons.mqtt_plugin.auth:AlfonsHBMQTTAuthPlugin",
+			"mqtt_plugin_alfons_topic = Alfons.mqtt_plugin.topic:AlfonsHBMQTTTopicPlugin"
+		]
+	}
 )
