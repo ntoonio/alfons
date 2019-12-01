@@ -18,12 +18,18 @@ loadedData = {}
 
 def apiInfoHandle(request):
 	data = {
-		"external_ip": common.EXT_IP,
-		"ip": common.IP,
-		"ssl": c.config["web"]["ssl"]
+		"ext_ip": c.config["ext_ip"],
+		"ip": c.config["ip"],
+		"domain": c.config["domain"],
+		"web_port": c.config["web"]["port"],
+		"ssl": c.config["ssl"]["enabled"],
+		"mqtt": {
+			"tcp_port": c.config["mqtt"]["tcp_port"],
+			"ws_port": c.config["mqtt"]["ws_port"]
+		}
 	}
 
-	if c.config["web"]["ssl"]:
+	if c.config["ssl"]["enabled"]:
 		data["ssl_cert"] = loadedData["ssl_cert"]
 		data["ssl_chain"] = loadedData["ssl_chain"]
 
@@ -44,10 +50,10 @@ def start(q):
 
 	app = web.Application(middlewares=[IndexMiddleware()])
 
-	app.router.add_static("/", common.PATH + "components/web/")
-
 	# API endpoints
 	app.router.add_get("/api/v1/info/", apiInfoHandle)
+
+	app.router.add_static("/", common.PATH + "components/web/")
 
 	sslContext = None
 	if c.config["ssl"]["enabled"]:

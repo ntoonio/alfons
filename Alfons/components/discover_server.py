@@ -13,6 +13,7 @@ def start(q):
 	addrConfig = {
 		"ip": c.config["ip"],
 		"domain": c.config["domain"] if "domain" in c.config else None,
+		"web_port": c.config["web"]["port"],
 		"ssl": c.config["ssl"]["enabled"]
 	}
 
@@ -20,4 +21,4 @@ def start(q):
 
 	while True:
 		data, addr = discoverSocket.recvfrom(128)
-		discoverSocket.sendto(json.dumps(addrConfig).encode("ascii"), addr)
+		discoverSocket.sendto(json.dumps(addrConfig).encode("utf-8"), addr)

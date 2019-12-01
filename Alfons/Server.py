@@ -45,14 +45,14 @@ def setupConfig():
 				c.config["ssl"]["enabled"] = False
 				break
 
-	if not "ip" in c.config:
+	if not "ip" in c.config or c.config["ip"] == None:
 		# Find IP
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		s.connect(("8.8.8.8", 80))
 		c.config["ip"] = s.getsockname()[0]
 		s.close()
 
-	if not "ext_ip" in c.config:
+	if not "ext_ip" in c.config or c.config["ext_ip"] == None:
 		# Find external ip
 		r = requests.get(url="https://api.ipify.org?format=json")
 		c.config["ext_ip"] = r.json()["ip"]
