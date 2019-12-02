@@ -48,9 +48,10 @@ def start(q):
 	# It's ok that this is insecure since it's only a local connection. The only reason it uses TLS is because that's what the
 	# broker is using and it can't connect without it. It might, in the future if we need more local connections, be an
 	# alternative to start a new broker listener without encryption and that won't be exposed to the internet.
-	client.tls_insecure_set(True)
-
-	client.connect("localhost", c.config["mqtt"]["tcp_port"])
+	if c.config["ssl"]["enabled"]:
+		client.tls_insecure_set(True)
 
 	q.put(0)
+	client.connect("127.0.0.1", c.config["mqtt"]["tcp_port"])
+
 	client.loop_start()

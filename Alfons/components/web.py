@@ -18,7 +18,6 @@ loadedData = {}
 
 def apiInfoHandle(request):
 	data = {
-		"ext_ip": c.config["ext_ip"],
 		"ip": c.config["ip"],
 		"domain": c.config["domain"],
 		"web_port": c.config["web"]["port"],
@@ -39,11 +38,12 @@ def apiInfoHandle(request):
 def loadData():
 	global loadedData
 
-	with open(c.config["ssl"]["cert_file"]) as f:
-		loadedData["ssl_cert"] = f.read()
+	if c.config["ssl"]["enabled"]:
+		with open(c.config["ssl"]["cert_file"]) as f:
+			loadedData["ssl_cert"] = f.read()
 
-	with open(c.config["ssl"]["chain_file"]) as f:
-		loadedData["ssl_chain"] = f.read()
+		with open(c.config["ssl"]["chain_file"]) as f:
+			loadedData["ssl_chain"] = f.read()
 
 def start(q):
 	loadData()
@@ -56,12 +56,15 @@ def start(q):
 	app.router.add_static("/", common.PATH + "components/web/")
 
 	sslContext = None
-	if c.config["ssl"]["enabled"]:
+	if c.config["ssl"]["enabled"] and c.config["web"]["inside_port"] == None:
 		sslContext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH, cafile=c.config["ssl"]["chain_file"])
 		sslContext.load_cert_chain(c.config["ssl"]["cert_file"], c.config["ssl"]["key_file"])
 
+	webPort = c.config["web"]["port"] if c.config["web"]["inside_port"] == None else c.config["web"]["inside_port"]
+
+	logger.info("Starting web server on {}".format(webPort))
 	asyncio.set_event_loop(asyncio.new_event_loop())
-	server = asyncio.get_event_loop().create_server(app.make_handler(), host="0.0.0.0", port=c.config["web"]["port"], ssl=sslContext)
+	server = asyncio.get_event_loop().create_server(app.make_handler(), host="0.0.0.0", port=webPort, ssl=sslContext)
 	asyncio.get_event_loop().run_until_complete(server)
 
 	q.put(0)

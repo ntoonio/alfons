@@ -1,7 +1,5 @@
 data_path: config/
 
-ip: NULL
-ext_ip: NULL
 domain: NULL
 
 location:
@@ -20,3 +18,4 @@ mqtt:
 
 web:
   port: 8080
+  inside_port: NULL

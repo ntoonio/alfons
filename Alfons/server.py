@@ -37,13 +37,15 @@ def setupConfig():
 	if not c.config["data_path"].startswith("/"):
 		c.config["data_path"] = c.PATH + c.config["data_path"]
 
-	if "cert_file" in c.config["ssl"]:
+	if c.config["ssl"]["cert_file"] != None:
 		c.config["ssl"]["enabled"] = True
 
 		for k in ["chain_file", "key_file", "trusted_file"]:
-			if k not in c.config["ssl"]:
+			if c.config["ssl"][k] != None:
 				c.config["ssl"]["enabled"] = False
 				break
+	else:
+		c.config["ssl"]["enabled"] = False
 
 	if not "ip" in c.config or c.config["ip"] == None:
 		# Find IP
@@ -51,11 +53,6 @@ def setupConfig():
 		s.connect(("8.8.8.8", 80))
 		c.config["ip"] = s.getsockname()[0]
 		s.close()
-
-	if not "ext_ip" in c.config or c.config["ext_ip"] == None:
-		# Find external ip
-		r = requests.get(url="https://api.ipify.org?format=json")
-		c.config["ext_ip"] = r.json()["ip"]
 
 def main():
 	logger.info("Starting Alfons!")

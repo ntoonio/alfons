@@ -9,6 +9,7 @@ logging.getLogger("transitions.core").setLevel(100)
 
 @asyncio.coroutine
 def broker_coro():
+	print("starting broker", c.config["ssl"]["enabled"],)
 	brokerConfig = {
 		"listeners": {
 			"default": {

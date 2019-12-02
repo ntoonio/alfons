@@ -78,9 +78,6 @@ logging.basicConfig(handlers=[fh, ch], level=0)
 
 config = {}
 
-def getExternalLocation():
-	return c.config["domain"] if "domain" in c.config else c.config["ext_ip"] if "ext_ip" in c.config else None
-
 def generateId(length, onlyHex = False, noPunctation = True):
 	return "".join(secrets.choice(string.digits + "abcdef" if onlyHex else string.ascii_letters + string.digits + ("" if noPunctation else string.punctuation)) for _ in range(length))
 
