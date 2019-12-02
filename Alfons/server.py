@@ -41,7 +41,7 @@ def setupConfig():
 		c.config["ssl"]["enabled"] = True
 
 		for k in ["chain_file", "key_file", "trusted_file"]:
-			if c.config["ssl"][k] != None:
+			if c.config["ssl"][k] == None:
 				c.config["ssl"]["enabled"] = False
 				break
 	else:
