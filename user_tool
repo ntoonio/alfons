@@ -126,9 +126,12 @@ def main():
 	global db
 	db = LockableSqliteConnection(config["data_path"] + "Alfons.db")
 
-	if easyArguments(argTree) is None:
+	r = easyArguments(argTree)
+	if r is None:
 		return ""
+	else:
+		return r
 
 if __name__ == "__main__":
-	#print(main())
-	main()
+	print(main())
+	#main()
