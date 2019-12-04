@@ -1,30 +1,27 @@
-function connect() {
-	client.connect({
-		onSuccess:onConnect,
-		onFailure: function (data) {
-			console.log(data)
-		},
-		mqttVersion: 4,
-		userName : localStorage.getItem("username"),
-		password : localStorage.getItem("password"),
-		useSSL: true
-	})
-}
+function mqttPublish(topic, payload) {
+	var xhr = new XMLHttpRequest()
 
-function onConnect() {
-	console.log("Connected");
-}
+	xhr.onreadystatechange = function () {
+		if (this.readyState != 4) return
 
-function onConnectionLost(responseObject) {
-	if (responseObject.errorCode !== 0) {
-		console.log("Connection lost... " + responseObject.errorMessage);
+		if (this.status >= 200 && this.status < 300) {
+			var data = JSON.parse(this.responseText)
+			if (data["success"] === true) {
+				document.body.classList.add("flash")
+				setTimeout(() => {
+					document.body.classList.remove("flash")
+				}, 1000)
+			}
+		}
 	}
-}
 
-function mqttPublish(topic, message) {
-	const msg = new Paho.MQTT.Message(message)
-	msg.destinationName = topic
-	client.send(msg)
+	xhr.open("PUT", "/api/v1/mqtt_publish/", true)
+	xhr.send(JSON.stringify({
+		"topic": topic,
+		"payload": payload,
+		"username": localStorage.getItem("username"),
+		"password": localStorage.getItem("password")
+	}))
 }
 
 function createActionHTML(component) {
@@ -53,16 +50,12 @@ function printComponents() {
 	})
 }
 
-if (localStorage.getItem("username") == undefined || localStorage.getItem("password") == undefined) {
+if (!localStorage.getItem("username") || !localStorage.getItem("password")) {
 	window.location.href += "credentials/"
 }
 
-const host = window.location.hostname
-const port = 27372
+if (JSON.parse(localStorage.getItem("components") || "[]").length == 0) {
+	window.location.href += "setup/"
+}
 
-client = new Paho.MQTT.Client(host, port, "web-dashboard-" + localStorage.getItem("client-id"));
-
-client.onConnectionLost = onConnectionLost;
-
-connect()
 printComponents()

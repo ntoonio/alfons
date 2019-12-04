@@ -1,4 +1,5 @@
 from hbmqtt.plugins.authentication import BaseAuthPlugin
+from hbmqtt.plugins.topic_checking import BaseTopicPlugin
 from passlib.hash import pbkdf2_sha256
 
 class AlfonsHBMQTTAuthPlugin(BaseAuthPlugin):
@@ -11,7 +12,7 @@ class AlfonsHBMQTTAuthPlugin(BaseAuthPlugin):
 	async def authenticate(self, *args, **kwargs):
 		session = kwargs.get("session", None)
 
-		username = session.username
+		username = session.username.lower()
 		password = session.password
 
 		if username.startswith("iot-"):
@@ -34,3 +35,11 @@ class AlfonsHBMQTTAuthPlugin(BaseAuthPlugin):
 					return True
 
 		return False
+
+class AlfonsHBMQTTTopicPlugin(BaseTopicPlugin):
+	def __init__(self, context):
+		super().__init__(context)
+
+	async def topic_filtering(self, *args, **kwargs):
+		self.context.logger.debug("Topic checking - *args={} **kwargs={}".format(str(args), str(kwargs)))
+		return True

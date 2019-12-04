@@ -1,7 +1,11 @@
 function saveCredentials() {
 	localStorage.setItem("username", document.getElementById("username-input").value)
-	localStorage.setItem("password", document.getElementById("password-input").value)
 	localStorage.setItem("client-id", document.getElementById("client-id-input").value)
+
+	const rawPassword = document.getElementById("password-input").value
+	if (rawPassword != "***") {
+		localStorage.setItem("password", rawPassword)
+	}
 
 	var url = window.location.href
 	if (url.substr(-1) == "/") url = url.substr(0, url.length - 2)
@@ -21,4 +25,14 @@ function makeId(length) {
 }
 
 document.getElementById("username-input").value = localStorage.getItem("username")
-document.getElementById("client-id-input").value = makeId(7)
+
+if (localStorage.getItem("password")) {
+	document.getElementById("password-input").value = "***"
+}
+
+if (!localStorage.getItem("client-id")) {
+	document.getElementById("client-id-input").value = makeId(7)
+}
+else {
+	document.getElementById("client-id-input").value = localStorage.getItem("client-id")
+}

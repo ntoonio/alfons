@@ -13,7 +13,7 @@
 
 .row {
 	margin-top: 5px;
-	
+
 	-webkit-box-shadow: 0px 5px -5px -5px rgba(0,0,0,0.1);
 	-moz-box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.1);
 	box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.1);
@@ -140,3 +140,47 @@
 		font-size: 50px;
 	}
 }
+
+/*
+=====================
+||     ACTIONS     ||
+=====================
+*/
+
+.flash {
+	animation: flash 1s ease-out;
+	animation-iteration-count: 1;
+
+	-moz-animation: flash 1s ease-out;
+	-moz-animation-iteration-count: 1;
+
+	-webkit-animation: flash 1s ease-out;
+	-webkit-animation-iteration-count: 1;
+
+	-ms-animation: flash 1s ease-out;
+	-ms-animation-iteration-count: 1;
+  }
+
+  @keyframes flash {
+	  0% { background-color: transparent; }
+	  50% { background-color: #53c953; }
+	  100% { background-color: transparent; }
+  }
+
+  @-webkit-keyframes flash {
+	  0% { background-color: transparent; }
+	  50% { background-color: #53c953; }
+	  100% { background-color: transparent; }
+  }
+
+  @-moz-keyframes flash {
+	  0% { background-color: transparent; }
+	  50% { background-color: #53c953; }
+	  100% { background-color: transparent; }
+  }
+
+  @-ms-keyframes flash {
+	  0% { background-color: transparent; }
+	  50% { background-color: #53c953; }
+	  100% { background-color: transparent; }
+  }

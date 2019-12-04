@@ -22,7 +22,7 @@ def publish(**kwargs):
 
 	logger.debug("Publishing '{}' to {} with qos set to {}. retain={}".format(payload, topic, qos, retain))
 
-	client.publish(topic, payload=payload, qos=qos, retain=retain)
+	return client.publish(topic, payload=payload, qos=qos, retain=retain)
 
 def start(q):
 	global client

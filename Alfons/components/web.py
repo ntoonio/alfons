@@ -6,7 +6,11 @@ import asyncio
 from aiohttp import web
 from aiohttp_index import IndexMiddleware
 import ssl
+import pkg_resources
+import time
 
+import database
+import mqtt_client
 import common as c
 
 logger = logging.getLogger(__name__)
@@ -16,7 +20,7 @@ aiohttoAccessLogger.setLevel(logging.WARN)
 
 loadedData = {}
 
-def apiInfoHandle(request):
+async def apiInfoHandle(request):
 	data = {
 		"ip": c.config["ip"],
 		"domain": c.config["domain"],
@@ -33,6 +37,64 @@ def apiInfoHandle(request):
 		data["ssl_chain"] = loadedData["ssl_chain"]
 
 	return web.json_response(data=data)
+
+async def mqttPublishHandle(request):
+	params = await request.json()
+
+	requiredParams = ["topic", "payload", "username", "password"]
+
+	for p in requiredParams:
+		if not p in params:
+			return web.json_response(data={"error": "Missing one of the parameters: " + ", ".join(requiredParams)}, status=406)
+
+	username = params["username"]
+	password = params["password"]
+
+	if username.lower() == "server":
+		return web.json_response(data={"error": "Username can't be 'server'"}, status=406)
+
+	authEntryPoint = None
+	for e in pkg_resources.iter_entry_points("hbmqtt.broker.plugins"):
+		if e.name == "mqtt_plugin_alfons_auth":
+			authEntryPoint = e
+			break
+
+	if authEntryPoint == None:
+		return web.json_response(data={"error": "Authorization endpoint not found, something went wrong during the installation"}, status=503)
+
+	# Imitate the broker calling the auth plugin
+
+	class FakeContext():
+		def __init__(self, conf, logger):
+			self.config = conf
+			self.logger = logger
+
+	class FakeSession():
+		def __init__(self, username, password):
+			self.username = username
+			self.password = password
+
+	context = FakeContext({"auth": {"alfons-db": database.db, "server-password": None}}, logger) # Set server-password just in case to save us from 'key not found'
+	session = FakeSession(username, password)
+
+	authPluginObj = e.load()
+	allowed = await authPluginObj(context).authenticate(session=session)
+
+	if not allowed:
+		return web.json_response(data={"error": "Not authenticated"}, status=401)
+
+	t = params["topic"]
+	p = params["payload"]
+	q = params["qos"] if "qos" in params else 1
+	r = params["ratain"] if "retain" in params else False
+
+	messageInfo = mqtt_client.publish(topic=t, payload=p, qos=q, retain=r)
+	messageInfo.wait_for_publish()
+
+	if messageInfo.is_published():
+		return web.json_response(data={"success": True, "msg": "Succesfully published to topic '{}'".format(t)}, status=201)
+	else: # Can this happen?
+		return web.json_response(data={"success": False, "msg": "The message wasn't published due to unknown reasons"}, status=500)
 
 # Preload some data so the files won't have to be read for every page visit
 def loadData():
@@ -52,6 +114,7 @@ def start(q):
 
 	# API endpoints
 	app.router.add_get("/api/v1/info/", apiInfoHandle)
+	app.router.add_put("/api/v1/mqtt_publish/", mqttPublishHandle)
 
 	app.router.add_static("/", common.PATH + "components/web/")
 
