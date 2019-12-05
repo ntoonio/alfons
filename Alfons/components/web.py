@@ -12,6 +12,7 @@ import time
 import database
 import mqtt_client
 import common as c
+import authorization as a
 
 logger = logging.getLogger(__name__)
 
@@ -53,32 +54,7 @@ async def mqttPublishHandle(request):
 	if username.lower() == "server":
 		return web.json_response(data={"error": "Username can't be 'server'"}, status=406)
 
-	authEntryPoint = None
-	for e in pkg_resources.iter_entry_points("hbmqtt.broker.plugins"):
-		if e.name == "mqtt_plugin_alfons_auth":
-			authEntryPoint = e
-			break
-
-	if authEntryPoint == None:
-		return web.json_response(data={"error": "Authorization endpoint not found, something went wrong during the installation"}, status=503)
-
-	# Imitate the broker calling the auth plugin
-
-	class FakeContext():
-		def __init__(self, conf, logger):
-			self.config = conf
-			self.logger = logger
-
-	class FakeSession():
-		def __init__(self, username, password):
-			self.username = username
-			self.password = password
-
-	context = FakeContext({"auth": {"alfons-db": database.db, "server-password": None}}, logger) # Set server-password just in case to save us from 'key not found'
-	session = FakeSession(username, password)
-
-	authPluginObj = e.load()
-	allowed = await authPluginObj(context).authenticate(session=session)
+	allowed = a.authorize(username, password)
 
 	if not allowed:
 		return web.json_response(data={"error": "Not authenticated"}, status=401)

@@ -1,9 +1,11 @@
 import asyncio
 from hbmqtt.broker import Broker
 from hbmqtt.plugins.authentication import BaseAuthPlugin
+import logging
+
 import common as c
 import components as comp
-import logging
+import authorization as a
 
 logging.getLogger("transitions.core").setLevel(100)
 
@@ -35,8 +37,7 @@ def broker_coro():
 		},
 		"auth": {
 			"plugins": ["mqtt_plugin_alfons_auth"],
-			"alfons-db": comp.components["database"].db,
-			"server-password": c.MQTT_SERVER_PASSWORD
+			"authorizer": a.authorize
 		}
 	}
 

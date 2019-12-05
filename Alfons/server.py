@@ -79,17 +79,18 @@ def main():
 				else:
 					logger.exception("Module '{}' crashed".format(name))
 
-		thread = threading.Thread(target=moduleThread, args=(startCompQueue, comp.components[name], ))
-		thread.daemon = True
-		thread.start()
+		if hasattr(comp.components[name], "start"):
+			thread = threading.Thread(target=moduleThread, args=(startCompQueue, comp.components[name], ))
+			thread.daemon = True
+			thread.start()
 
-		r = startCompQueue.get()
+			r = startCompQueue.get()
 
-		if issubclass(type(r), Exception):
-			logger.exception("Module '{}' crashed during startup. No new modules will be started".format(name), exc_info=r)
-			break
-		else:
-			logger.info("Successfully set up component {}".format(name))
+			if issubclass(type(r), Exception):
+				logger.exception("Module '{}' crashed during startup. No new modules will be started".format(name), exc_info=r)
+				break
+			else:
+				logger.info("Successfully set up component {}".format(name))
 
 def start():
 	try:

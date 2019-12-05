@@ -2,9 +2,10 @@
 	"load_order": [
 		"discover_server",
 		"database",
+		"authorization",
 		"mqtt_broker",
-		"mqtt_client",
 		"automation",
+		"mqtt_client",
 		"sun",
 		"clock",
 		"web"
