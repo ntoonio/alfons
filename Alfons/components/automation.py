@@ -38,7 +38,7 @@ def runExecutionTests():
 
 def _readAllAutomations():
 	for fileName in os.listdir(PATH + "/automations"):
-		if fileName.endswith(".yaml") or fileName.endswith(".yml") and not fileName.startswith("_"):
+		if (fileName.endswith(".yaml") or fileName.endswith(".yml")) and not fileName.startswith("_"):
 			readAutomation(fileName)
 
 def readAutomation(fileName):

@@ -3,6 +3,7 @@ import common as c
 import components as comp
 import time
 import logging
+import certifi
 import ssl
 from ssl import PROTOCOL_TLSv1_1
 
@@ -39,9 +40,7 @@ def start(q):
 	sslContext = None
 	if c.config["ssl"]["enabled"]:
 		sslContext = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-
-		# curl https://curl.haxx.se/ca/cacert.pem > trusted_file
-		sslContext.load_verify_locations(cafile=c.config["ssl"]["trusted_file"])
+		sslContext.load_verify_locations(cafile=certifi.where())
 
 	client.tls_set_context(sslContext)
 
