@@ -42,6 +42,8 @@ def _readAllAutomations():
 			readAutomation(fileName)
 
 def readAutomation(fileName):
+	logger.debug("Loading automation '{}'".format(name))
+
 	with open(PATH + "/automations/" + fileName) as f:
 		a = yaml.safe_load(f)
 

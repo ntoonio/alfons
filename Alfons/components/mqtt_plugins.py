@@ -10,6 +10,10 @@ class AlfonsHBMQTTAuthPlugin(BaseAuthPlugin):
 	async def authenticate(self, *args, **kwargs):
 		session = kwargs.get("session", None)
 
+		if session.username == None or session.password == None:
+			self.context.logger.debug("Tried to authenticate with 'None' username or password [AlfonsHBMQTTAuthPlugin]")
+			return False
+
 		username = session.username.lower()
 		password = session.password
 
