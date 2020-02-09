@@ -6,6 +6,7 @@ import imp
 import common as c
 import components as comp
 import logging
+import alflogger
 import yaml
 import time
 import requests
@@ -59,12 +60,12 @@ def main():
 
 	setupConfig()
 
-	with open(c.PATH + "/components/manifest.json") as manifestFile:
+	with open(c.PATH + "components/manifest.json") as manifestFile:
 		componentsList = json.load(manifestFile)["load_order"]
 
 		for component in componentsList:
 			fileName = component + ".py"
-			module = imp.load_source(fileName[:-3], c.PATH + "/components/" + fileName)
+			module = imp.load_source(fileName[:-3], c.PATH + "components/" + fileName)
 			comp.components[fileName[:-3]] = module
 
 	startCompQueue = Queue()
@@ -96,7 +97,7 @@ def start():
 	try:
 		main()
 
-		# Pretty uggly but working solution
+		# Pretty ugly but working solution
 		l = threading.Lock()
 		l.acquire()
 		l.acquire()

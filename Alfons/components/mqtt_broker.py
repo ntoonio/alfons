@@ -11,6 +11,8 @@ logging.getLogger("transitions.core").setLevel(100)
 
 @asyncio.coroutine
 def broker_coro():
+	global broker
+
 	brokerConfig = {
 		"listeners": {
 			"default": {
